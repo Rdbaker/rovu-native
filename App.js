@@ -1,15 +1,6 @@
 import React from 'react';
 import { requireNativeComponent, StyleSheet, Text, View, TouchableHighlight, DatePickerIOS, Button } from 'react-native';
-import MapView from 'react-native-maps';
-
-fetch('https://rovu.herokuapp.com/api/v1/events', {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  }
-})
-  .then((res) => console.log(res.json()))
-  .catch(console.warn)
+import MapView, { Marker } from 'react-native-maps';
 
 class Hamburger extends React.Component {
   render() {
@@ -64,8 +55,23 @@ export default class App extends React.Component {
     super(props)
 
     this.state = {
-      selectingDate: false
+      selectingDate: false,
+      data: {
+        events: []
+      },
     }
+    fetch('https://rovu.herokuapp.com/api/v1/events?category_id=120', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }
+    })
+      .then((res) => {
+        res.json().then(data => {
+          this.setState({ data })
+        })
+      })
+      .catch(console.warn)
   }
 
   toggleSearchForm = () => {
@@ -82,12 +88,21 @@ export default class App extends React.Component {
           <MapView
             style={StyleSheet.absoluteFill}
             initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
+              latitude: 42.3617131,
+              longitude: -71.0921,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
-          />
+          >
+            {this.state.data.events.map(event => (
+              <Marker
+                title={event.name}
+                description={event.description}
+                key={event.id}
+                coordinate={{ latitude: Number(event.venue.latitude), longitude: Number(event.venue.longitude) }}
+              />
+            ))}
+          </MapView>
         </View>
     );
   }
