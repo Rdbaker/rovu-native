@@ -28,7 +28,6 @@ export const searchEvents = () => {
   return (dispatch, getState) => {
     const startAfter = getState().search.getIn(['eventsQuery', 'startAfterDate']) || new Date()
     const endBefore = getState().search.getIn(['eventsQuery', 'endBeforeDate']) || new Date()
-    console.log(getState().search.getIn(['eventsQuery', 'endBeforeDate']) || new Date())
     return fetch(`https://rovu.herokuapp.com/api/v1/events?event_start_after=${startAfter.toISOString()}&event_end_before=${endBefore.toISOString()}`, {
       headers: {
         Accept: 'application/json',

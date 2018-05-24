@@ -1,9 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, Button } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import { searchEvents } from '../actions/search';
 
 const styles = StyleSheet.create({
   hamburger: {
@@ -39,11 +35,10 @@ const styles = StyleSheet.create({
 });
 
 
-const Hamburger = ({
+export default Hamburger = ({
   onClick,
-  actions: { searchEvents }
 }) => (
-  <TouchableHighlight style={styles.hamburger} onPress={() => { searchEvents(); onClick();}}>
+  <TouchableHighlight style={styles.hamburger} onPress={onClick}>
     <View style={styles.burgerLineContainer}>
       <Text style={styles.burgerLine}></Text>
       <Text style={styles.burgerLine}></Text>
@@ -51,8 +46,3 @@ const Hamburger = ({
     </View>
   </TouchableHighlight>
 )
-
-const mapDispatchToProps = dispatch => ({actions: bindActionCreators({ searchEvents }, dispatch)})
-
-
-export default connect(null, mapDispatchToProps)(Hamburger)

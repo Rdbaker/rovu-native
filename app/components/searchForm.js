@@ -4,7 +4,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { setEndBeforeDate, setStartAfterDate } from '../actions/search';
+import { setEndBeforeDate, setStartAfterDate, searchEvents } from '../actions/search';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,6 +46,7 @@ class SearchForm extends React.Component {
   dispatchSearch = () => {
     this.props.actions.setEndBeforeDate(this.state.endBeforeDate)
     this.props.actions.setStartAfterDate(this.state.startAfterDate)
+    this.props.actions.searchEvents()
     this.props.onClick()
   }
 
@@ -78,7 +79,17 @@ class SearchForm extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({actions: bindActionCreators({ setEndBeforeDate, setStartAfterDate }, dispatch)})
+const mapDispatchToProps = dispatch => (
+  {
+    actions: bindActionCreators({
+        setEndBeforeDate,
+        setStartAfterDate,
+        searchEvents,
+      },
+      dispatch
+    )
+  }
+)
 
 const mapStateToProps = state => {
   return {

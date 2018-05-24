@@ -17,9 +17,7 @@ export default function searchReducer(state = defaultState, action) {
     case 'SET_CATEGORY_ID':
       return state.setIn(['eventsQuery', 'categoryId'], fromJS(action.payload));
     case 'SEARCH_EVENTS_SUCCESS':
-      console.log('heres the payload')
-      console.log(action.payload)
-      return state.setIn(['eventsData', 'events'], fromJS(action.payload));
+      return state.set('eventsData', fromJS(action.payload));
     default:
       return state;
   }
