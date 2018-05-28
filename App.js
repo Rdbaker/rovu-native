@@ -8,7 +8,17 @@ import SearchForm from './app/components/searchForm';
 import EventMap from './app/components/map';
 import reducers from './app/reducers';
 
-const store = createStore(reducers, applyMiddleware(thunk))
+const loggingMiddleware = store => next => action => {
+  console.info('applying action to store')
+  console.info(action)
+  next(action)
+}
+
+const store = createStore(
+  reducers,
+  applyMiddleware(thunk),
+  applyMiddleware(loggingMiddleware),
+)
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,9 +26,6 @@ export default class App extends React.Component {
 
     this.state = {
       selectingDate: false,
-      data: {
-        events: []
-      },
     }
   }
 

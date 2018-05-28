@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Picker } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { setEndBeforeDate, setStartAfterDate, searchEvents } from '../actions/search';
+import { setEndBeforeDate, setStartAfterDate, setCategoryId } from '../actions/search';
+import { searchEvents } from '../thunks/search';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,6 +13,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  title: {
+    fontSize: 25,
   },
 })
 
@@ -53,6 +57,7 @@ class SearchForm extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.title}>Search for events</Text>
         <Button title="Select Start After Date" onPress={this.toggleStartSelectVisible} />
         <Text>Current start after date: {this.state.startAfterDate.toLocaleString()}</Text>
         <DateTimePicker
@@ -73,6 +78,13 @@ class SearchForm extends React.Component {
           mode='datetime'
           minuteInterval={15}
         />
+        {!!this.props.facets &&
+          <Picker style={{ height: 50, width: 280 }} selectedValue={this.props.categoryId} onValueChange={(id) => this.props.actions.setCategoryId(id)}>
+            {this.props.facets.map(facet => (
+              <Picker.Item key={facet.get('category_id')} value={facet.get('category_id')} label={`${facet.get('name')} (${facet.get('event_count')})`}/>
+            ))}
+          </Picker>
+        }
         <Button title="Search" onPress={this.dispatchSearch} />
       </View>
     )
@@ -84,6 +96,7 @@ const mapDispatchToProps = dispatch => (
     actions: bindActionCreators({
         setEndBeforeDate,
         setStartAfterDate,
+        setCategoryId,
         searchEvents,
       },
       dispatch
@@ -95,6 +108,8 @@ const mapStateToProps = state => {
   return {
     endBeforeDate: state.search.getIn(['eventsQuery', 'endBeforeDate'], new Date()),
     startAfterDate: state.search.getIn(['eventsQuery', 'startAfterDate'], new Date()),
+    categoryId: state.search.getIn(['eventsQuery', 'categoryId']),
+    facets: state.search.getIn(['eventsData', 'facets']),
   }
 }
 
